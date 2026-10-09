@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
@@ -61,6 +62,7 @@ fun TelaDetalhesPosto(
                     .fillMaxSize()
                     .widthIn(max = 450.dp)
                     .statusBarsPadding()
+                    .navigationBarsPadding()
                     .padding(top = 70.dp, start = 20.dp, end = 20.dp, bottom = 20.dp)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -70,10 +72,10 @@ fun TelaDetalhesPosto(
                 Text("Percentual usado: ${
                     if (postoAtual.usa75){
                         "75%"
-                        }
+                    }
                     else{
                         "70%"
-                        }
+                    }
                 }")
 
                 val percentual = if (postoAtual.usa75) 0.75 else 0.70
@@ -105,6 +107,35 @@ fun TelaDetalhesPosto(
                     }"
                 }
                 Text("Cadastrado em: $dataFormatada")
+                val dataEdicaoFormatada = remember(postoAtual.dataUltimaEdicao) {
+                    "${formato.format(Date(postoAtual.dataUltimaEdicao))} às ${formatoHora.format(Date(postoAtual.dataUltimaEdicao))}"
+                }
+                Text("Última atualização: $dataEdicaoFormatada")
+
+                if (postoAtual.latitude != null && postoAtual.longitude != null) {
+                    Text(
+                        "Localização: ${
+                            "%5f".format(
+                                postoAtual.latitude
+                            )
+                        }, ${
+                            "%5f".format(
+                                postoAtual.longitude
+                            )
+                        }"
+                    )
+
+                    Button(
+                        onClick = {
+                            abrirLocalizacaoNoMapa(context, postoAtual.latitude, postoAtual.longitude)
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Abrir no Maps")
+                    }
+                } else {
+                    Text("Sem localização salva")
+                }
 
                 Button(
                     onClick = { aoEditar(postoAtual.id) },
@@ -112,6 +143,8 @@ fun TelaDetalhesPosto(
                 ) {
                     Text("Editar")
                 }
+
+
 
                 Button(
                     onClick = {

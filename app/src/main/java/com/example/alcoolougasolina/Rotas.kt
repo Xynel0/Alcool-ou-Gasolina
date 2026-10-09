@@ -5,7 +5,7 @@ object Rotas {
     const val LISTA = "lista"
     const val DETALHES = "detalhes/{postoId}"
     const val CADASTRO = "cadastro?postoId={postoId}"
-
+    const val ESCOLHER_LOCAL = "escolher_local"
     fun detalhes(postoId: String): String {
         return "detalhes/$postoId"
     }

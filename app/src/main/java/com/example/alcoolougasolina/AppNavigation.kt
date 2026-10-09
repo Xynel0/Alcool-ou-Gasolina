@@ -58,8 +58,15 @@ fun AppNavigation() {
                 usa75Inicial = if (postoId.isNullOrEmpty()) RascunhoPosto.usa75 else true,
                 aoSalvar = { idSalvo ->
                     navController.navigate(Rotas.detalhes(idSalvo)) {
-                        popUpTo(Rotas.LISTA)
+                        if (postoId.isNullOrEmpty()) {
+                            popUpTo(Rotas.CADASTRO) { inclusive = true }
+                        } else {
+                            popUpTo(Rotas.detalhes(postoId)) { inclusive = true }
+                        }
                     }
+                },
+                aoEscolherNoMapa = {
+                    navController.navigate(Rotas.ESCOLHER_LOCAL)
                 }
             )
         }
@@ -68,6 +75,13 @@ fun AppNavigation() {
             TelaListaPostos(
                 onPostoClicado = { postoId ->
                     navController.navigate(Rotas.detalhes(postoId))
+                },
+                onNovoPostoClicado = {
+                    RascunhoPosto.nome = ""
+                    RascunhoPosto.precoAlcool = ""
+                    RascunhoPosto.precoGasolina = ""
+                    RascunhoPosto.usa75 = true
+                    navController.navigate(Rotas.cadastroNovo())
                 }
             )
         }
@@ -87,6 +101,19 @@ fun AppNavigation() {
                     navController.navigate(Rotas.cadastroEditar(id))
                 },
                 aoExcluir = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable(Rotas.ESCOLHER_LOCAL) {
+            TelaEscolherLocal(
+                latitudeInicial = ResultadoEscolhaLocal.latitude,
+                longitudeInicial = ResultadoEscolhaLocal.longitude,
+                aoConfirmar = {
+                    navController.popBackStack()
+                },
+                aoCancelar = {
                     navController.popBackStack()
                 }
             )

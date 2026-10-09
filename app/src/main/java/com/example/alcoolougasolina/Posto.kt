@@ -9,6 +9,7 @@ data class Posto(
     val precoGasolina: Double,
     val usa75: Boolean,
     val dataCadastro: Long,
+    val dataUltimaEdicao: Long,
     val latitude: Double?,
     val longitude: Double?
 )
