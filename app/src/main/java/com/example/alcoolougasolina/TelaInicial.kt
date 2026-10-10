@@ -1,7 +1,6 @@
 package com.example.alcoolougasolina
 
 import androidx.compose.foundation.background
-import com.example.alcoolougasolina.ui.theme.AlcoolOuGasolinaTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -30,14 +29,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,22 +46,27 @@ import com.example.alcoolougasolina.ui.theme.AlcoolOuGasolinaTheme
 @Composable
 fun TelaInicial(
     aoClicarSalvarPosto: (
-            nome: String,
-            precoAlcool: String,
-            precoGasolina: String,
-            usa75: Boolean
-            ) -> Unit,
+        nome: String,
+        precoAlcool: String,
+        precoGasolina: String,
+        usa75: Boolean
+    ) -> Unit,
     aoClicarVerPostos: () -> Unit
-){
+) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val textoVamosCalcular = stringResource(R.string.vamos_calcular)
+    val textoDigiteDoisPrecos = stringResource(R.string.digite_os_dois_precos)
+    val textoAbastecaAlcool = stringResource(R.string.abasteca_com_alcool)
+    val textoAbastecaGasolina = stringResource(R.string.abasteca_com_gasolina)
 
     var precoAlcool by rememberSaveable { mutableStateOf("") }
     var precoGasolina by rememberSaveable { mutableStateOf("") }
     var nomeDoPosto by rememberSaveable { mutableStateOf("") }
     var usa75 by rememberSaveable { mutableStateOf(carregarUsa75(context)) }
-    var resultado by rememberSaveable { mutableStateOf("Vamos Calcular?") }
+    var resultado by rememberSaveable { mutableStateOf(textoVamosCalcular) }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -82,31 +86,32 @@ fun TelaInicial(
             OutlinedTextField(
                 value = nomeDoPosto,
                 onValueChange = { nomeDoPosto = it },
-                label = { Text("Nome do Posto (opcional)") },
+                label = { Text(stringResource(R.string.nome_do_posto_opcional)) },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
-                    onNext = {focusManager.moveFocus(FocusDirection.Down)}
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 )
             )
 
             OutlinedTextField(
                 value = precoAlcool,
                 onValueChange = { precoAlcool = it },
-                label = { Text("Preço do Álcool (R$)") },
+                label = { Text(stringResource(R.string.preco_do_alcool_r)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
-                    imeAction = ImeAction.Next),
+                    imeAction = ImeAction.Next
+                ),
                 modifier = Modifier.fillMaxWidth(),
                 keyboardActions = KeyboardActions(
-                    onNext = {focusManager.moveFocus(FocusDirection.Down)}
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
                 )
             )
 
             OutlinedTextField(
                 value = precoGasolina,
                 onValueChange = { precoGasolina = it },
-                label = { Text("Preço da Gasolina (R$)") },
+                label = { Text(stringResource(R.string.preco_da_gasolina_r)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
@@ -117,15 +122,13 @@ fun TelaInicial(
                 )
             )
 
-
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Absolute.SpaceBetween
             ) {
 
-                Text("Porcentagem do cálculo")
+                Text(stringResource(R.string.porcentagem_do_calculo))
 
                 Box(contentAlignment = Alignment.Center) {
                     Switch(
@@ -152,25 +155,29 @@ fun TelaInicial(
                     val gasolina = precoGasolina.replace(",", ".").toDoubleOrNull()
 
                     if (alcool == null || gasolina == null) {
-                        resultado = "Digite os dois preços!"
+                        resultado = textoDigiteDoisPrecos
                     } else {
                         val percentual = if (usa75) 0.75 else 0.70
                         resultado = if (alcool <= gasolina * percentual) {
-                            "Abasteça com Álcool"
+                            textoAbastecaAlcool
                         } else {
-                            "Abasteça com Gasolina"
+                            textoAbastecaGasolina
                         }
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Calcular")
+                Text(stringResource(R.string.calcular))
             }
 
             Text(
                 text = resultado,
                 textAlign = TextAlign.Center,
-                style = if (resultado == "Vamos Calcular?" || resultado == "Digite os dois preços!") MaterialTheme.typography.titleMedium else MaterialTheme.typography.titleLarge,
+                style = if (resultado == textoVamosCalcular || resultado == textoDigiteDoisPrecos) {
+                    MaterialTheme.typography.titleMedium
+                } else {
+                    MaterialTheme.typography.titleLarge
+                },
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -182,11 +189,11 @@ fun TelaInicial(
                         precoAlcool,
                         precoGasolina,
                         usa75
-                        )
+                    )
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Salvar Posto")
+                Text(stringResource(R.string.salvar_posto))
             }
 
             OutlinedButton(
@@ -195,7 +202,7 @@ fun TelaInicial(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Ver Postos Salvos")
+                Text(stringResource(R.string.ver_postos_salvos))
             }
         }
         Surface(
@@ -206,7 +213,7 @@ fun TelaInicial(
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
             Text(
-                text = "Álcool ou Gasolina?",
+                text = stringResource(R.string.alcool_ou_gasolina),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,

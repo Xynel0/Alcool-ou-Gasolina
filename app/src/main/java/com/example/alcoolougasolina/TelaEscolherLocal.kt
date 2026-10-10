@@ -1,8 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.alcoolougasolina
 
 import android.preference.PreferenceManager
-import android.widget.Toast
-import androidx.compose.foundation.checkScrollableContainerConstraints
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,14 +16,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -40,8 +39,7 @@ import org.osmdroid.views.overlay.Marker
 fun TelaEscolherLocal(
     latitudeInicial: Double?,
     longitudeInicial: Double?,
-    aoConfirmar: () -> Unit,
-    aoCancelar: () -> Unit
+    aoConfirmar: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -71,7 +69,7 @@ fun TelaEscolherLocal(
             color = MaterialTheme.colorScheme.background
         ) {
             Text(
-                text = "Toque no mapa para marcar o local",
+                text = stringResource(R.string.toque_no_mapa_para_marcar_o_local),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -120,7 +118,11 @@ fun TelaEscolherLocal(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Text(
-                text = "Local escolhido: ${"%5f".format(pontoEscolhido.latitude)}, ${"%5f".format(pontoEscolhido.longitude)}",
+                text = stringResource(
+                    R.string.local_escolhido,
+                    "%5f".format(pontoEscolhido.latitude),
+                    "%5f".format(pontoEscolhido.longitude)
+                ),
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -132,7 +134,7 @@ fun TelaEscolherLocal(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Confirmar localização")
+                Text(stringResource(R.string.confirmar_localiza_o))
             }
 
             Text(

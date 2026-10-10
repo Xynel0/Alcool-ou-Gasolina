@@ -1,6 +1,5 @@
 package com.example.alcoolougasolina
 
-import android.R.attr.fontWeight
 import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -48,13 +48,12 @@ fun TelaDetalhesPosto(
 
     val postoAtual = posto
 
-    if (postoAtual == null){
+    if (postoAtual == null) {
         Text(
-            text = "Posto não encontrado!",
+            text = stringResource(R.string.posto_n_o_encontrado),
             modifier = Modifier.padding(24.dp)
         )
-    }
-    else {
+    } else {
         Box(modifier = Modifier.fillMaxSize()) {
 
             Column(
@@ -67,23 +66,20 @@ fun TelaDetalhesPosto(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text("Preço do Álcool: R$ ${postoAtual.precoAlcool}")
-                Text("Preço da Gasolina: R$ ${postoAtual.precoGasolina}")
-                Text("Percentual usado: ${
-                    if (postoAtual.usa75){
-                        "75%"
-                    }
-                    else{
-                        "70%"
-                    }
-                }")
+                Text(stringResource(R.string.pre_o_do_lcool_r, postoAtual.precoAlcool))
+                Text(stringResource(R.string.pre_o_da_gasolina_r, postoAtual.precoGasolina))
+                Text(
+                    stringResource(
+                        R.string.percentual_usado,
+                        if (postoAtual.usa75) "75%" else "70%"
+                    )
+                )
 
                 val percentual = if (postoAtual.usa75) 0.75 else 0.70
                 val decisao = if (postoAtual.precoAlcool <= postoAtual.precoGasolina * percentual) {
-                    "Abasteça com Álcool"
-                }
-                else{
-                    "Abasteça com Gasolina"
+                    stringResource(R.string.abaste_a_com_lcool)
+                } else {
+                    stringResource(R.string.abaste_a_com_gasolina)
                 }
                 Text(
                     text = decisao,
@@ -92,37 +88,33 @@ fun TelaDetalhesPosto(
 
                 val formato = remember { DateFormat.getDateFormat(context) }
                 val formatoHora = remember { DateFormat.getTimeFormat(context) }
-                val dataFormatada = remember(postoAtual.dataCadastro) {
-                    "${formato.format(
-                        Date(
-                            postoAtual.dataCadastro
-                        )
-                    )
-                    } às ${
-                        formatoHora.format(
-                            Date(
-                                postoAtual.dataCadastro
-                            )
-                        )
-                    }"
+
+                val dataCadastroTexto = remember(postoAtual.dataCadastro) {
+                    formato.format(Date(postoAtual.dataCadastro))
                 }
-                Text("Cadastrado em: $dataFormatada")
-                val dataEdicaoFormatada = remember(postoAtual.dataUltimaEdicao) {
-                    "${formato.format(Date(postoAtual.dataUltimaEdicao))} às ${formatoHora.format(Date(postoAtual.dataUltimaEdicao))}"
+                val horaCadastroTexto = remember(postoAtual.dataCadastro) {
+                    formatoHora.format(Date(postoAtual.dataCadastro))
                 }
-                Text("Última atualização: $dataEdicaoFormatada")
+                val dataEdicaoTexto = remember(postoAtual.dataUltimaEdicao) {
+                    formato.format(Date(postoAtual.dataUltimaEdicao))
+                }
+                val horaEdicaoTexto = remember(postoAtual.dataUltimaEdicao) {
+                    formatoHora.format(Date(postoAtual.dataUltimaEdicao))
+                }
+
+                val dataFormatada = stringResource(R.string.s, dataCadastroTexto, horaCadastroTexto)
+                val dataEdicaoFormatada = stringResource(R.string.s, dataEdicaoTexto, horaEdicaoTexto)
+
+                Text(stringResource(R.string.cadastrado_em, dataFormatada))
+                Text(stringResource(R.string.ltima_atualiza_o, dataEdicaoFormatada))
 
                 if (postoAtual.latitude != null && postoAtual.longitude != null) {
                     Text(
-                        "Localização: ${
-                            "%5f".format(
-                                postoAtual.latitude
-                            )
-                        }, ${
-                            "%5f".format(
-                                postoAtual.longitude
-                            )
-                        }"
+                        stringResource(
+                            R.string.localiza_o,
+                            "%.5f".format(postoAtual.latitude),
+                            "%.5f".format(postoAtual.longitude)
+                        )
                     )
 
                     Button(
@@ -131,20 +123,18 @@ fun TelaDetalhesPosto(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Abrir no Maps")
+                        Text(stringResource(R.string.abrir_no_maps))
                     }
                 } else {
-                    Text("Sem localização salva")
+                    Text(stringResource(R.string.sem_localiza_o_salva))
                 }
 
                 Button(
                     onClick = { aoEditar(postoAtual.id) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Editar")
+                    Text(stringResource(R.string.editar))
                 }
-
-
 
                 Button(
                     onClick = {
@@ -153,7 +143,7 @@ fun TelaDetalhesPosto(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Excluir")
+                    Text(stringResource(R.string.excluir))
                 }
             }
             Surface(
@@ -164,7 +154,7 @@ fun TelaDetalhesPosto(
                     .background(color = MaterialTheme.colorScheme.background)
             ) {
                 Text(
-                    text =  postoAtual.nome,
+                    text = postoAtual.nome,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,

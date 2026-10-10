@@ -45,8 +45,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,6 +74,9 @@ fun TelaCadastroPosto(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope()
+
+    val textoErroNomeVazio = stringResource(R.string.digite_o_nome_do_posto)
+    val textoErroPrecosInvalidos = stringResource(R.string.digite_os_dois_pre_os_corretamente)
 
     var nome by rememberSaveable { mutableStateOf(nomeInicial) }
     var precoAlcool by rememberSaveable { mutableStateOf(precoAlcoolInicial) }
@@ -173,7 +176,7 @@ fun TelaCadastroPosto(
             OutlinedTextField(
                 value = nome,
                 onValueChange = { nome = it },
-                label = { Text("Nome do Posto") },
+                label = { Text(stringResource(R.string.nome_do_posto)) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
                     onNext = { focusManager.moveFocus(FocusDirection.Down) }
@@ -184,7 +187,7 @@ fun TelaCadastroPosto(
             OutlinedTextField(
                 value = precoAlcool,
                 onValueChange = { precoAlcool = it },
-                label = { Text("Preço do Álcool (R$)") },
+                label = { Text(stringResource(R.string.pre_o_do_lcool_r)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Next
@@ -198,7 +201,7 @@ fun TelaCadastroPosto(
             OutlinedTextField(
                 value = precoGasolina,
                 onValueChange = { precoGasolina = it },
-                label = { Text("Preço da Gasolina (R$)") },
+                label = { Text(stringResource(R.string.pre_o_da_gasolina_r)) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Decimal,
                     imeAction = ImeAction.Done
@@ -214,7 +217,7 @@ fun TelaCadastroPosto(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Absolute.SpaceBetween
             ) {
-                Text("Porcentagem do cálculo")
+                Text(stringResource(R.string.porcentagem_do_c_lculo))
 
                 Box(contentAlignment = Alignment.Center) {
                     Switch(
@@ -232,6 +235,16 @@ fun TelaCadastroPosto(
                 }
             }
 
+            if (estadoPermissao != EstadoPermissaoLocalizacao.CONCEDIDA && latitude != null && longitude != null) {
+                Text(
+                    stringResource(
+                        R.string.localiza_o_escolhida,
+                        "%.5f".format(latitude),
+                        "%.5f".format(longitude)
+                    )
+                )
+            }
+
             when (estadoPermissao) {
                 EstadoPermissaoLocalizacao.CONCEDIDA -> {
                     Column(
@@ -239,9 +252,15 @@ fun TelaCadastroPosto(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         if (latitude != null && longitude != null) {
-                            Text("Localização salva: ${"%.5f".format(latitude)}, ${"%.5f".format(longitude)}")
+                            Text(
+                                stringResource(
+                                    R.string.localiza_o_salva,
+                                    "%.5f".format(latitude),
+                                    "%.5f".format(longitude)
+                                )
+                            )
                         } else {
-                            Text("Nenhuma localização salva ainda")
+                            Text(stringResource(R.string.nenhuma_localiza_o_salva_ainda))
                         }
 
                         Button(
@@ -269,13 +288,13 @@ fun TelaCadastroPosto(
                                     strokeWidth = 2.dp
                                 )
                             } else {
-                                Text("Usar localização atual")
+                                Text(stringResource(R.string.usar_localiza_o_atual))
                             }
                         }
 
                         if (localizacaoFalhou) {
                             Text(
-                                text = "Não foi possível obter sua localização. Verifique se a localização está ativada nas configurações do celular.",
+                                text = stringResource(R.string.local_nao_encontrado_ver_config),
                                 textAlign = TextAlign.Center,
                                 color = MaterialTheme.colorScheme.error
                             )
@@ -290,7 +309,7 @@ fun TelaCadastroPosto(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Permitir acesso à localização")
+                        Text(stringResource(R.string.permitir_acesso_localiza_o))
                     }
                 }
 
@@ -299,14 +318,9 @@ fun TelaCadastroPosto(
                         onClick = { mostrarDialogoConfiguracoes = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Permitir acesso à localização")
+                        Text(stringResource(R.string.permitir_acesso_localiza_o))
                     }
                 }
-            }
-
-            // ---- Fica fora do when: sempre visível, independente da permissão de GPS ----
-            if (estadoPermissao != EstadoPermissaoLocalizacao.CONCEDIDA && latitude != null && longitude != null) {
-                Text("Localização escolhida: ${"%.5f".format(latitude)}, ${"%.5f".format(longitude)}")
             }
 
             Button(
@@ -317,10 +331,10 @@ fun TelaCadastroPosto(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Escolher local no mapa")
+                Text(stringResource(R.string.escolher_local_no_mapa))
             }
 
-            if (latitude != null && longitude != null){
+            if (latitude != null && longitude != null) {
                 OutlinedButton(
                     onClick = {
                         latitude = null
@@ -328,7 +342,7 @@ fun TelaCadastroPosto(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Remover localização")
+                    Text(stringResource(R.string.remover_localiza_o))
                 }
             }
 
@@ -339,10 +353,10 @@ fun TelaCadastroPosto(
 
                     when {
                         nome.isBlank() -> {
-                            mensagemErro = "Digite o nome do posto!"
+                            mensagemErro = textoErroNomeVazio
                         }
                         alcool == null || gasolina == null -> {
-                            mensagemErro = "Digite os dois preços corretamente"
+                            mensagemErro = textoErroPrecosInvalidos
                         }
                         else -> {
                             mensagemErro = null
@@ -379,7 +393,7 @@ fun TelaCadastroPosto(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Salvar")
+                Text(stringResource(R.string.salvar))
             }
 
             mensagemErro?.let {
@@ -398,7 +412,9 @@ fun TelaCadastroPosto(
                 .background(color = MaterialTheme.colorScheme.background)
         ) {
             Text(
-                text = if (postoIdParaEditar.isNullOrEmpty()) "Novo Posto" else "Editar Posto",
+                text = if (postoIdParaEditar.isNullOrEmpty()) stringResource(R.string.novo_posto) else stringResource(
+                    R.string.editar_posto
+                ),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -413,9 +429,9 @@ fun TelaCadastroPosto(
     if (mostrarDialogoExplicacao) {
         AlertDialog(
             onDismissRequest = { mostrarDialogoExplicacao = false },
-            title = { Text("Por que pedimos sua localização?") },
+            title = { Text(stringResource(R.string.por_que_pedimos_sua_localiza_o)) },
             text = {
-                Text("Isso permite salvar onde fica cada posto, para você localizá-lo no mapa depois. Sem essa permissão, você ainda pode cadastrar postos, só não vai poder usar sua localização atual automaticamente — mas pode escolher no mapa manualmente.")
+                Text(stringResource(R.string.aviso_sobre_local))
             },
             confirmButton = {
                 Button(
@@ -424,12 +440,12 @@ fun TelaCadastroPosto(
                         launcherPermissao.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
                     }
                 ) {
-                    Text("Permitir")
+                    Text(stringResource(R.string.permitir))
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { mostrarDialogoExplicacao = false }) {
-                    Text("Agora não")
+                    Text(stringResource(R.string.agora_n_o))
                 }
             }
         )
@@ -438,9 +454,9 @@ fun TelaCadastroPosto(
     if (mostrarDialogoConfiguracoes) {
         AlertDialog(
             onDismissRequest = { mostrarDialogoConfiguracoes = false },
-            title = { Text("Localização bloqueada") },
+            title = { Text(stringResource(R.string.localiza_o_bloqueada)) },
             text = {
-                Text("Você negou a permissão de localização mais de uma vez, então o Android não mostra mais o popup automático. Para permitir, abra as configurações do app e ative a localização manualmente. Você também pode continuar escolhendo o local do posto no mapa.")
+                Text(stringResource(R.string.aviso_final_local))
             },
             confirmButton = {
                 Button(
@@ -453,12 +469,12 @@ fun TelaCadastroPosto(
                         context.startActivity(intent)
                     }
                 ) {
-                    Text("Abrir Configurações")
+                    Text(stringResource(R.string.abrir_configura_es))
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { mostrarDialogoConfiguracoes = false }) {
-                    Text("Agora não")
+                    Text(stringResource(R.string.agora_n_o))
                 }
             }
         )

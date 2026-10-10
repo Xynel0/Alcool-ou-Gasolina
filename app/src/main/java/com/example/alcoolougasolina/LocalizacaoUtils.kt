@@ -12,9 +12,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
-import android.net.Uri
-import com.example.alcoolougasolina.ResultadoEscolhaLocal.latitude
-import com.example.alcoolougasolina.ResultadoEscolhaLocal.longitude
+import androidx.core.net.toUri
 
 suspend fun obterLocalizacaoAtual(context: Context): android.location.Location? {
     if (!temPermissaoLocalizacao(context)) return null
@@ -68,7 +66,7 @@ enum class EstadoPermissaoLocalizacao {
 }
 
 fun abrirLocalizacaoNoMapa(context: Context, latitude: Double, longitude: Double){
-    val uri = Uri.parse("geo:$latitude,$longitude?q=$latitude,$longitude")
+    val uri = "geo:$latitude,$longitude?q=$latitude,$longitude".toUri()
     val intent = Intent(Intent.ACTION_VIEW, uri)
 
     try{

@@ -1,19 +1,11 @@
 package com.example.alcoolougasolina
 
-import android.R.attr.defaultValue
-import android.R.attr.text
-import android.R.attr.type
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.currentRecomposeScope
-import androidx.navigation.NavArgument
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.alcoolougasolina.Rotas.detalhes
 
 @Composable
 fun AppNavigation() {
@@ -111,9 +103,6 @@ fun AppNavigation() {
                 latitudeInicial = ResultadoEscolhaLocal.latitude,
                 longitudeInicial = ResultadoEscolhaLocal.longitude,
                 aoConfirmar = {
-                    navController.popBackStack()
-                },
-                aoCancelar = {
                     navController.popBackStack()
                 }
             )

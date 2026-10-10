@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -52,7 +53,7 @@ fun TelaListaPostos(
     ) {
         if (postos.isEmpty()) {
             Text(
-                text = "Nenhum posto salvo por enquanto",
+                text = stringResource(R.string.nenhum_posto_salvo_por_enquanto),
                 modifier = Modifier.padding(25.dp)
             )
         } else {
@@ -77,8 +78,8 @@ fun TelaListaPostos(
                             text = posto.nome,
                             style = MaterialTheme.typography.titleMedium
                         )
-                        Text("Álcool: R$ ${posto.precoAlcool}")
-                        Text("Gasolina: R$ ${posto.precoGasolina}")
+                        Text(stringResource(R.string.lcool_r, posto.precoAlcool))
+                        Text(stringResource(R.string.gasolina_r, posto.precoGasolina))
                     }
                 }
             }
@@ -89,7 +90,7 @@ fun TelaListaPostos(
                 .align(Alignment.BottomEnd)
                 .padding(20.dp)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Novo Posto")
+            Icon(Icons.Default.Add, contentDescription = stringResource(R.string.novo_posto))
         }
     }
 }

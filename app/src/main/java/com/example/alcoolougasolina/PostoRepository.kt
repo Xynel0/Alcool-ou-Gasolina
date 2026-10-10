@@ -1,6 +1,5 @@
 package com.example.alcoolougasolina
 
-import android.R
 import android.content.Context
 import java.util.UUID
 
