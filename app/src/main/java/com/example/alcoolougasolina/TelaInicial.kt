@@ -1,0 +1,240 @@
+package com.example.alcoolougasolina
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.alcoolougasolina.ui.theme.AlcoolOuGasolinaTheme
+
+@Composable
+fun TelaInicial(
+    aoClicarSalvarPosto: (
+        nome: String,
+        precoAlcool: String,
+        precoGasolina: String,
+        usa75: Boolean
+    ) -> Unit,
+    aoClicarVerPostos: () -> Unit
+) {
+    val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    val textoVamosCalcular = stringResource(R.string.vamos_calcular)
+    val textoDigiteDoisPrecos = stringResource(R.string.digite_os_dois_precos)
+    val textoAbastecaAlcool = stringResource(R.string.abasteca_com_alcool)
+    val textoAbastecaGasolina = stringResource(R.string.abasteca_com_gasolina)
+
+    var precoAlcool by rememberSaveable { mutableStateOf("") }
+    var precoGasolina by rememberSaveable { mutableStateOf("") }
+    var nomeDoPosto by rememberSaveable { mutableStateOf("") }
+    var usa75 by rememberSaveable { mutableStateOf(carregarUsa75(context)) }
+    var resultado by rememberSaveable { mutableStateOf(textoVamosCalcular) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .widthIn(max = 450.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(top = 70.dp, start = 20.dp, end = 20.dp, bottom = 20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp, Alignment.CenterVertically)
+        ) {
+
+            OutlinedTextField(
+                value = nomeDoPosto,
+                onValueChange = { nomeDoPosto = it },
+                label = { Text(stringResource(R.string.nome_do_posto_opcional)) },
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+
+            OutlinedTextField(
+                value = precoAlcool,
+                onValueChange = { precoAlcool = it },
+                label = { Text(stringResource(R.string.preco_do_alcool_r)) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Next
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.moveFocus(FocusDirection.Down) }
+                )
+            )
+
+            OutlinedTextField(
+                value = precoGasolina,
+                onValueChange = { precoGasolina = it },
+                label = { Text(stringResource(R.string.preco_da_gasolina_r)) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Decimal,
+                    imeAction = ImeAction.Done
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                keyboardActions = KeyboardActions(
+                    onDone = { keyboardController?.hide() }
+                )
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Absolute.SpaceBetween
+            ) {
+
+                Text(stringResource(R.string.porcentagem_do_calculo))
+
+                Box(contentAlignment = Alignment.Center) {
+                    Switch(
+                        checked = usa75,
+                        onCheckedChange = {
+                            usa75 = it
+                            salvarUsa75(context, it)
+                        })
+                    Text(
+                        text = if (usa75) "75%" else "70%",
+                        fontSize = 10.sp,
+                        color = if (usa75) MaterialTheme.colorScheme.onPrimary
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier
+                            .align(if (usa75) Alignment.CenterStart else Alignment.CenterEnd)
+                            .padding(horizontal = 5.dp)
+                    )
+                }
+            }
+
+            Button(
+                onClick = {
+                    val alcool = precoAlcool.replace(",", ".").toDoubleOrNull()
+                    val gasolina = precoGasolina.replace(",", ".").toDoubleOrNull()
+
+                    if (alcool == null || gasolina == null) {
+                        resultado = textoDigiteDoisPrecos
+                    } else {
+                        val percentual = if (usa75) 0.75 else 0.70
+                        resultado = if (alcool <= gasolina * percentual) {
+                            textoAbastecaAlcool
+                        } else {
+                            textoAbastecaGasolina
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.calcular))
+            }
+
+            Text(
+                text = resultado,
+                textAlign = TextAlign.Center,
+                style = if (resultado == textoVamosCalcular || resultado == textoDigiteDoisPrecos) {
+                    MaterialTheme.typography.titleMedium
+                } else {
+                    MaterialTheme.typography.titleLarge
+                },
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Button(
+                onClick = {
+                    aoClicarSalvarPosto(
+                        nomeDoPosto,
+                        precoAlcool,
+                        precoGasolina,
+                        usa75
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.salvar_posto))
+            }
+
+            OutlinedButton(
+                onClick = {
+                    aoClicarVerPostos()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.ver_postos_salvos))
+            }
+        }
+        Surface(
+            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.background)
+        ) {
+            Text(
+                text = stringResource(R.string.alcool_ou_gasolina),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(top = 25.dp, bottom = 10.dp)
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TelaPreview() {
+    AlcoolOuGasolinaTheme {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            TelaInicial(
+                aoClicarSalvarPosto = { _, _, _, _ -> },
+                aoClicarVerPostos = {}
+            )
+        }
+    }
+}
