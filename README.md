@@ -9,4 +9,4 @@ Esta é uma das dúvidas mais recorrentes na hora do abastecimento veícular. O 
 
 ### Como instalar?
 
-  Acesse as [https://github.com/Xynel0/Alcool-ou-Gasolina/releases](releases) e procure a mais recente. Descendo a tela para baixo, você deve localizar um arquivo '.apk' e clicar sobre ele. Autorize a instalação em seu android e seja feliz!
+  Acesse as [releases](https://github.com/Xynel0/Alcool-ou-Gasolina/releases) e procure a mais recente. Descendo a tela para baixo, você deve localizar um arquivo '.apk' e clicar sobre ele. Autorize a instalação em seu android e seja feliz!
