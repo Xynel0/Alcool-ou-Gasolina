@@ -12,17 +12,17 @@ Esta é uma das dúvidas mais recorrentes na hora do abastecimento veícular. O 
   Acesse as [releases](https://github.com/Xynel0/Alcool-ou-Gasolina/releases) e procure a mais recente. Descendo a tela para baixo, você deve localizar um arquivo '.apk' e clicar sobre ele. Autorize a instalação em seu android e seja feliz!
 
 
-<img src="pdm/interface_em_ingles.jpg" width="200.dp" alt="interface em inglês">
+<img src="pdm/interface_em_ingles.jpg" width="300.dp" alt="interface em inglês">
 
-<img src="pdm/interface_em_portugues.jpg" width="200.dp"  alt="interface em português">
+<img src="pdm/interface_em_portugues.jpg" width="300.dp"  alt="interface em português">
 
-<img src="pdm/novo_posto.jpg" width="200.dp"  alt="Novo posto">
+<img src="pdm/novo_posto.jpg" width="300.dp"  alt="Novo posto">
 
-<img src="pdm/detalhes_posto.jpg" width="200.dp"  alt="Detalhes do posto">
+<img src="pdm/detalhes_posto.jpg" width="300.dp"  alt="Detalhes do posto">
 
-<img src="pdm/editar_posto.jpg" width="200.dp"  alt="Editar posto">
+<img src="pdm/editar_posto.jpg" width="300.dp"  alt="Editar posto">
 
-<img src="pdm/lista_postos.jpg" width="200.dp"  alt="Lista dos postos">
+<img src="pdm/lista_postos.jpg" width="300.dp"  alt="Lista dos postos">
 
 
 https://github.com/user-attachments/assets/96be06a6-7392-4ad6-9a03-8cf4ea92fa8f
