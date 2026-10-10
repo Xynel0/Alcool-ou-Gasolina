@@ -6,3 +6,7 @@ Esta é uma das dúvidas mais recorrentes na hora do abastecimento veícular. O 
 - Salve seus postos favoritos e atualize seus valores conforme eles mudarem
 - Adicione uma localização para cada posto. Se você não sabe onde está abastecendo, ligue o localizador e não perca os postos que descobrir em suas jornadas
 - Algum posto não lhe atende bem? Exclua-o da lista!
+
+### Como instalar?
+
+  Acesse as [https://github.com/Xynel0/Alcool-ou-Gasolina/releases](releases) e procure a mais recente. Descendo a tela para baixo, você deve localizar um arquivo '.apk' e clicar sobre ele. Autorize a instalação em seu android e seja feliz!
